@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  test:
+  python-test-cicd:
     runs-on: ubuntu-latest
 
     steps:
