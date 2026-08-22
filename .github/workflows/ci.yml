@@ -24,42 +24,33 @@ jobs:
           echo "Kernel:"
           uname -r
 
+          echo "Python:"
+          python3 --version
+
+          echo "User:"
+          whoami
 
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.9"
 
       - name: Setup Python environment
         run: |
           python3 -m venv .venv
           source .venv/bin/activate
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
+
+      - name: Check Flask application
+        run: |
+          source .venv/bin/activate
+          python -m py_compile app.py
 
       - name: Run tests
         run: |
           source .venv/bin/activate
           pytest -v
 
-
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Check Flask application
-        run: |
-          python -m py_compile app.py
-
-      - name: Run tests
-        run: |
-          pytest
       - name: Package application
         run: |
           zip -r flask-app.zip app.py requirements.txt test_app.py
