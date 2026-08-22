@@ -1,3 +1,4 @@
+# GitHub Actions CI test
 from flask import Flask, jsonify
 
 app = Flask(__name__)
