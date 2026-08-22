@@ -10,16 +10,43 @@ on:
 
 jobs:
   python-test-cicd:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
+      - name: Show runner information
+        run: |
+          echo "Hostname:"
+          hostname
+
+          echo "Operating system:"
+          cat /etc/os-release
+
+          echo "Kernel:"
+          uname -r
+
+
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.9"
+
+      - name: Setup Python environment
+        run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run tests
+        run: |
+          source .venv/bin/activate
+          pytest -v
+
+
 
       - name: Install dependencies
         run: |
