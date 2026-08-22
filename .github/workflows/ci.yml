@@ -35,7 +35,7 @@ jobs:
 
       - name: Setup Python environment
         run: |
-          python3 -m venv .venv
+          python3.11 -m venv .venv
           source .venv/bin/activate
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -44,7 +44,7 @@ jobs:
       - name: Check Flask application
         run: |
           source .venv/bin/activate
-          python -m py_compile app.py
+          python3.11 -m py_compile app.py
 
       - name: Run tests
         run: |
