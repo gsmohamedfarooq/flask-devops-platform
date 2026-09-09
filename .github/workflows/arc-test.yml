@@ -1,24 +1,32 @@
-name: ARC Runner Test
+name: CI Pipeline
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
 
 jobs:
-  test:
+  build:
     runs-on: arc-runner-set
 
     steps:
-      - name: Show runner
-        run: |
-          echo "Running inside Kubernetes!"
-          echo "Hostname:"
-          hostname
+      - name: Checkout
+        uses: actions/checkout@v6
 
-      - name: Show OS
-        run: |
-          uname -a
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: requirements.txt
 
-      - name: Show environment
+      - name: Install dependencies
         run: |
-          whoami
-          pwd
+          python --version
+          pip --version
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          pytest
