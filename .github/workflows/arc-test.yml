@@ -5,6 +5,11 @@ on:
   push:
     branches:
       - master
+      
+permissions:
+  contents: read
+  packages: write
+      
 
 jobs:
   build:
@@ -35,4 +40,20 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}    
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}   
+          
+      - name: Login to GHCR
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io \
+            -u "${{ github.actor }}" \
+            --password-stdin
+      
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository }}:${{ github.sha }} .
+      
+      - name: Push Docker image
+        run: |
+          docker push \
+            ghcr.io/${{ github.repository }}:${{ github.sha }}    
