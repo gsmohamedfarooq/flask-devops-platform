@@ -2,9 +2,9 @@ name: CI Pipeline
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
+  #push:
+  #  branches:
+  #    - master
 
 permissions:
   contents: read
