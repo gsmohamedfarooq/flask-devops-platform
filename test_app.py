@@ -7,7 +7,7 @@ def test_home():
     response = client.get("/")
 
     assert response.status_code == 200
-    assert response.data.decode() == "Hello from DevOps Platform - V3"
+    assert response.data.decode() == "Hello from DevOps Platform - V4"
 
 
 def test_health():
