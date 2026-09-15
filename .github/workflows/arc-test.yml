@@ -1,3 +1,4 @@
+```yaml
 name: CI Pipeline
 
 on:
@@ -5,15 +6,14 @@ on:
   push:
     branches:
       - master
-      
+
 permissions:
   contents: read
   packages: write
-      
 
 jobs:
   build:
-    runs-on: arc-runner-set
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -35,25 +35,29 @@ jobs:
       - name: Run tests
         run: |
           pytest
-          
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v6
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}   
-          
+
+      # Temporarily skipped because SonarQube is running
+      # outside the GitHub-hosted runner's accessible network.
+      #
+      # - name: SonarQube Scan
+      #   uses: SonarSource/sonarqube-scan-action@v6
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+
       - name: Login to GHCR
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io \
             -u "${{ github.actor }}" \
             --password-stdin
-      
+
       - name: Build Docker image
         run: |
           docker build \
             -t ghcr.io/${{ github.repository }}:${{ github.sha }} .
-      
+
       - name: Push Docker image
         run: |
           docker push \
-            ghcr.io/${{ github.repository }}:${{ github.sha }}    
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
+```
